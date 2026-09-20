@@ -1,0 +1,21 @@
+# Dependencies and build output
+node_modules/
+client/node_modules/
+server/node_modules/
+client/dist/
+coverage/
+
+# Environment files and logs
+.env
+.env.local
+server/.env
+client/.env
+*.log
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Assignment brief (keep local; do not publish with the application source)
+Coworking_Space_Booking_System - Practical Task (1).pdf
