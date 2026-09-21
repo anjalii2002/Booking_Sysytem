@@ -60,6 +60,16 @@ cd server
 npm run seed
 ```
 
+### Start MongoDB with Docker only
+
+If you are running the server with `npm run dev` on your machine and do not have MongoDB installed as a Windows service, start the database from the project root first:
+
+```powershell
+docker compose up -d mongodb
+```
+
+This exposes MongoDB at `mongodb://localhost:27017`, which matches the default `MONGODB_URI` in `server/.env.example`.
+
 Demo accounts (development only):
 
 - Admin: `admin@cowork.local` / `Admin@123`
