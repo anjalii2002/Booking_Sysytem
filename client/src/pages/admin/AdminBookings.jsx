@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
-import { adminApi } from '../../services/api';
+import { adminApi, spacesApi } from '../../services/api';
 import StatusBadge from '../../components/StatusBadge';
 import SkeletonLoader from '../../components/SkeletonLoader';
-import { Calendar, Filter, User, Clock } from 'lucide-react';
+import { Calendar, Filter, User, Clock, Building2 } from 'lucide-react';
 
 export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);
+  const [spaces, setSpaces] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ status: '', date: '' });
+  const [filters, setFilters] = useState({ status: '', date: '', space: '' });
 
   const fetchBookings = () => {
     setLoading(true);
     const params = {};
     if (filters.status) params.status = filters.status;
     if (filters.date) params.date = filters.date;
+    if (filters.space) params.space = filters.space;
     adminApi
       .bookings(params)
       .then(({ data }) => setBookings(data.data))
@@ -21,6 +23,7 @@ export default function AdminBookings() {
   };
 
   useEffect(() => {
+    spacesApi.list({ limit: 100 }).then(({ data }) => setSpaces(data.data?.spaces || []));
     fetchBookings();
   }, []);
 
@@ -75,6 +78,25 @@ export default function AdminBookings() {
           />
         </div>
 
+        <div className="space-y-1.5 flex-1 w-full">
+          <label className="text-xs font-medium text-slate-700 flex items-center gap-1 block">
+            <Building2 className="w-3.5 h-3.5 text-slate-400" />
+            Filter Space
+          </label>
+          <select
+            value={filters.space}
+            onChange={(e) => setFilters({ ...filters, space: e.target.value })}
+            className="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white text-slate-900"
+          >
+            <option value="">All Spaces</option>
+            {spaces.map((s) => (
+              <option key={s._id} value={s._id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <button
           type="submit"
           className="w-full sm:w-auto px-5 py-2 text-xs font-semibold text-white bg-teal-600 hover:bg-teal-700 rounded-xl transition-colors shadow-2xs flex items-center justify-center gap-1.5 self-end"
@@ -92,7 +114,7 @@ export default function AdminBookings() {
           <Calendar className="w-12 h-12 text-slate-300 mx-auto" />
           <h3 className="text-base font-semibold text-slate-900">No booking records found</h3>
           <p className="text-sm text-slate-500 max-w-sm mx-auto">
-            Try resetting your status or date filters.
+            Try resetting your status, date, or space filters.
           </p>
         </div>
       ) : (
